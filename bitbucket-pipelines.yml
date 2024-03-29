@@ -1,0 +1,96 @@
+#  The workflow allows running tests, code linting and security scans on feature branches (as well as master).
+#  The .NET Core package will be validated and published after the code is merged to master.
+# Prerequisites: $NUGET_SECRET_API_KEY setup as deployment variables.
+# To run your pipeline on a Windows machine, create a self-hosted Windows runner.
+# For instructions on setting up a Windows runner, see https://support.atlassian.com/bitbucket-cloud/docs/set-up-runners-for-windows/
+image: mcr.microsoft.com/dotnet/sdk:7.0
+
+definitions:
+  steps:    
+    - step: &PR-Build
+        name: PR Build
+        caches:
+          - dotnetcore
+        script:
+          - export SOLUTION_NAME=HRMS
+          - export export CONFIGURATION=Release
+          - dotnet restore ${SOLUTION_NAME}.sln
+          - dotnet build --no-restore ${SOLUTION_NAME}.sln --configuration ${CONFIGURATION}
+    - step: &Security-Scan
+        name: Security Scan
+        script:
+              # Run a security scan for sensitive data.
+              # See more security tools at https://bitbucket.org/product/features/pipelines/integrations?&category=security
+              - pipe: atlassian/git-secrets-scan:0.5.1
+    - step: &Build-test
+        name: Build and Test
+        caches:
+          - dotnetcore
+        script:
+          - export SOLUTION_NAME=HRMS
+          - export export CONFIGURATION=Release
+          - REPORTS_PATH=./test-reports/build_${BITBUCKET_BUILD_NUMBER}
+          - dotnet restore ${SOLUTION_NAME}.sln
+          - dotnet build --no-restore ${SOLUTION_NAME}.sln --configuration ${CONFIGURATION}
+          - dotnet test --no-build ${SOLUTION_NAME}.sln --test-adapter-path:. --logger:"junit;LogFilePath=$REPORTS_PATH/junit.xml"
+    - step: &Publish
+        name: Publish
+        caches:
+          - dotnetcore
+        trigger: manual
+        script:
+          - export SOLUTION_NAME=HRMS
+          - export export CONFIGURATION=Release
+          - dotnet restore ${SOLUTION_NAME}.sln
+          - dotnet publish --no-restore --configuration Release --output ${BITBUCKET_CLONE_DIR}/release
+        artifacts:
+          - release/**
+    - step: &Deploy
+        name: Deploy
+        trigger: manual
+        deployment: test
+        script:
+          - export SOLUTION_NAME=HRMS
+          - export RELEASES_DIR="./releases"
+          - export NUPKG_VERSION=1.0.${BITBUCKET_BUILD_NUMBER}
+          - pipe: atlassian/ftp-deploy:0.4.1
+            variables:
+              USER: ${FTP_USERNAME}
+              PASSWORD: ${FTP_PASSWORD}
+              SERVER: ${FTP_SERVER}
+              REMOTE_PATH: ${FTP_PATH}
+              LOCAL_PATH: 'release/'
+              DEBUG: 'true'
+              EXTRA_ARGS: '--exclude=src/* --exclude=package.json'
+pipelines:
+  pull-requests:
+    '**': 
+      - step: *PR-Build
+  branches:
+    Test:
+      - parallel:
+        - step: *Security-Scan
+        - step: *Build-test
+        - step: *Publish
+      - step:
+          <<: *Deploy
+          name: Deploy to test
+          deployment: test
+    dev:
+      - parallel:
+        - step: *Security-Scan
+        - step: *Build-test
+        - step: *Publish
+      - step:
+          <<: *Deploy
+          name: Deploy to test
+          deployment: test
+    master:
+      - parallel:
+        - step: *Security-Scan
+        - step: *Build-test
+        - step: *Publish
+      - step:
+          <<: *Deploy
+          name: Deploy to Prodcution
+          deployment: production

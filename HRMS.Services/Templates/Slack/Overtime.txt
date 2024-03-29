@@ -1,0 +1,1 @@
+﻿We have received your overtime request for this date: %DATES%, totaling %TOTALDAYSHOURS%. As of %TODAYDATE%, your overtime request is %STATUS%.
