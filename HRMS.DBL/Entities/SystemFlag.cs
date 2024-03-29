@@ -1,0 +1,12 @@
+﻿namespace HRMS.DBL.Entities
+{
+    public class SystemFlag : TrackableEntity
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Value { get; set; }
+        public string Description { get; set; }
+        public string Tags { get; set; }
+    }
+}
+

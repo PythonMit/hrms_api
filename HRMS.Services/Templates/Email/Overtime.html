@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+    <meta charset="UTF-8" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <meta name="x-apple-disable-message-reformatting" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta content="telephone=no" name="format-detection" />
+    <title></title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+    <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,300italic,400italic,700,700italic' rel='stylesheet' type='text/css' />
+    <style>
+        table {
+            border-collapse: separate;
+            border-spacing: 2em;
+            width: 100%;
+            border: 0;
+        }
+
+            table th,
+            table td {
+                text-align: center;
+            }
+
+            table p {
+                text-align: left;
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <table>
+            <tr>
+                <th>
+                    <img src="%APIURL%static/media/natrix_full_logo.d87e8c0155892b4e4716da9dbec919b7.svg" />
+                </th>
+            </tr>
+            <tr class="message-body">
+                <td>
+                    <div>
+                        <p>Hello %RECIPIENTNAME%, </p>
+                        <div class="message">
+                            <p>We have received your overtime request for this date: %DATES%, totaling %TOTALDAYSHOURS%.</p>
+                            <p>As of %TODAYDATE%, your overtime request is %STATUS%. </p>
+                            <p>Thanks,</p>
+                            <p>Approved by - %APPROVEDBY% %APPROVEDPOSITION%</p>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

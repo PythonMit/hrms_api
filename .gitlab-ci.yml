@@ -1,0 +1,90 @@
+image: mcr.microsoft.com/dotnet/sdk:7.0
+
+stages:
+  - build
+  - test
+  - release
+  - deploy
+
+build:
+  stage: build
+  only:
+    - dev
+    - master
+    - merge_requests
+  script:
+    - dotnet build
+
+test:
+  stage: test
+  only:
+    - dev
+    - master
+    - merge_requests
+  script:
+    - dotnet test
+
+release:
+  stage: release
+  only:
+    - dev
+    - master
+  artifacts:
+    paths:
+      - publish/
+    expire_in: 1 hours
+  script:
+    - dotnet publish -c Release -o $CI_PROJECT_DIR/publish/ HRMS.Api/HRMS.Api.csproj
+    - echo $CI_PROJECT_DIR/publish
+    - echo "Application ready to publish/deploy..."
+
+deploy-development:
+  image: ubuntu:latest
+  stage: deploy
+  only:
+    - dev
+  script:
+    - echo "Deploying application..."
+    - apt-get update -qq && apt-get install -y -qq lftp
+    - lftp -c "open $FTP_CONFIG;mirror -R --transfer-all publish $FTP_PATH;cd $FTP_PATH;ls -al; bye"
+    - echo "Application successfully deployed."
+
+release-development:
+  stage: deploy
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  only:
+    - dev
+  needs:
+    - job: deploy-development
+  script:
+    - echo "running release_job for $TAG"
+  release:
+    tag_name: "DEV_V1.1.$CI_PIPELINE_IID"
+    description: "$CI_COMMIT_MESSAGE"
+    ref: "$CI_COMMIT_SHA"
+
+deploy-production:
+  when: manual
+  stage: deploy
+  only:
+    - master
+  environment: production
+  script:
+    - echo "Deploying application to production..."
+    - apt-get update -qq && apt-get install -y -qq lftp
+    - lftp -c "open $PROD_FTP_CONFIG;mirror -R --transfer-all publish $PROD_FTP_PATH;cd $PROD_FTP_PATH;ls -al; bye"
+    - echo "Application successfully deployed to production."
+
+release-production:
+  stage: deploy
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  only:
+    - master
+  needs:
+    - job: deploy-production
+  script:
+    - echo "running release_job for $TAG"
+  release:
+    tag_name: "PROD_V1.1.$CI_PIPELINE_IID"
+    description: "$CI_COMMIT_MESSAGE"
+    ref: "$CI_COMMIT_SHA"

@@ -1,0 +1,17 @@
+version: '3'
+name: hrms-api
+services:
+  stg-hrms-api:
+    build:
+      context: .
+    container_name: stg-hrms-api
+    restart: unless-stopped
+    labels:
+      io.portainer.accesscontrol.users: hrms
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Staging
+    ports:
+      - "3443:443"
+      - "3080:80"
+    volumes:
+      - ./publish:/usr/src/app

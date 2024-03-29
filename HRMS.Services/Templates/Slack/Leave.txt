@@ -1,0 +1,1 @@
+﻿We have received your leave request for these dates: %DATES%, totaling %TOTALDAYSHOURS%. As of %TODAYDATE%, your leave request is %STATUS%.

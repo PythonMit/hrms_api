@@ -1,0 +1,1 @@
+﻿%Employee% requested leave for these dates: %DATES%, totaling %TOTALDAYSHOURS%, request is %STATUS%.

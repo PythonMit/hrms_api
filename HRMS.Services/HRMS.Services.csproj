@@ -1,0 +1,63 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Localize\**" />
+    <Compile Remove="Templates\InAppNotification\**" />
+    <Compile Remove="Templates\SlackPush\**" />
+    <Compile Remove="Templates\SMS\**" />
+    <Compile Remove="Templates\WebPush\**" />
+    <EmbeddedResource Remove="Localize\**" />
+    <EmbeddedResource Remove="Templates\InAppNotification\**" />
+    <EmbeddedResource Remove="Templates\SlackPush\**" />
+    <EmbeddedResource Remove="Templates\SMS\**" />
+    <EmbeddedResource Remove="Templates\WebPush\**" />
+    <None Remove="Localize\**" />
+    <None Remove="Templates\InAppNotification\**" />
+    <None Remove="Templates\SlackPush\**" />
+    <None Remove="Templates\SMS\**" />
+    <None Remove="Templates\WebPush\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Templates\Email\Leave.html" />
+    <None Remove="Templates\Email\Overtime.html" />
+    <None Remove="Templates\InApp\Leave.txt" />
+    <None Remove="Templates\InApp\Overtime.txt" />
+    <None Remove="Templates\Slack\Leave.txt" />
+    <None Remove="Templates\Slack\Overtime.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Templates\Email\Leave.html" />
+    <EmbeddedResource Include="Templates\Email\Overtime.html" />
+    <EmbeddedResource Include="Templates\InApp\Leave.txt" />
+    <EmbeddedResource Include="Templates\InApp\Overtime.txt" />
+    <EmbeddedResource Include="Templates\Slack\Leave.txt" />
+    <EmbeddedResource Include="Templates\Slack\Overtime.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+    <PackageReference Include="Enums.NET" Version="4.0.1" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.54" />
+    <PackageReference Include="MailKit" Version="3.4.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="7.0.0" />
+    <PackageReference Include="RestSharp" Version="108.0.3" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.26.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HRMS.Core\HRMS.Core.csproj" />
+    <ProjectReference Include="..\HRMS.DBL\HRMS.DBL.csproj" />
+    <ProjectReference Include="..\HRMS.Resources\HRMS.Resources.csproj" />
+  </ItemGroup>
+
+</Project>
